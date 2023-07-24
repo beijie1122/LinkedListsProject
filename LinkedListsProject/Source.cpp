@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Node.h"
 
-void print(Node* head)
+void print(Node* head, int &Counter)
 {
 	//Helps so the head is constantly at the begining of the linked list 
 	Node* temp = head;
@@ -10,14 +10,66 @@ void print(Node* head)
 	{
 		std::cout << temp->data << "\n";
 		temp = temp->next;
+		Counter++;
 	}
+}
 
-	temp = head;
-	while (temp != NULL)
+Node* TakeInput()
+{
+	int UserData;
+	std::cin >> UserData;
+	Node* head = NULL; //LL is empty RN
+	Node* tail = NULL; //Cause LL is not yet created
+
+	while (UserData != -1)
 	{
-		std::cout << temp->data << "\n";
-		temp = temp->next;
+		Node *n = new Node(UserData);
+		//This Code makes linklist 
+		//MUST use dynamic memory to make sure nodes are not deleted 
+		//Check if node is first 
+		if (head == NULL)
+		{
+			head = n;
+			tail = n;
+		}
+		else
+		{
+			tail->next = n; //Updates the memory for next 
+			tail = n;
+		}
+		
+		std::cin >> UserData;
 	}
+	return head;
+}
+
+Node* TakeInput2()
+{
+	int UserData;
+	std::cin >> UserData;
+	Node* head = NULL; //LL is empty RN
+	Node* tail = NULL; //Cause LL is not yet created
+
+	while (UserData != -1)
+	{
+		Node* n = new Node(UserData);
+		//This Code makes linklist 
+		//MUST use dynamic memory to make sure nodes are not deleted 
+		//Check if node is first 
+		if (head == NULL)
+		{
+			head = n;
+			tail = n;
+		}
+		else
+		{
+			n->next = head; //Updates at head
+			head = n;
+		}
+
+		std::cin >> UserData;
+	}
+	return head;
 }
 
 int main()
@@ -63,7 +115,17 @@ int main()
 	Node3.next = &Node4;
 	Node4.next = &Node5;
 
-	print(Nexthead);
+	//print(Nexthead);
+
+	int counter = 0;
+
+	Node* DynamicHead = TakeInput();
+	print(DynamicHead, counter);
+	std::cout << "The LL length is: " << counter << "\n";
+//	Node* HeadUpdate = TakeInput2();
+//	print(HeadUpdate, counter);
+
+	
 
 	return 0;
 }
