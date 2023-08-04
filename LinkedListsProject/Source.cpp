@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Node.h"
 
-void print(Node* head, int &Counter)
+void print(Node* head)
 {
 	//Helps so the head is constantly at the begining of the linked list 
 	Node* temp = head;
@@ -10,8 +10,116 @@ void print(Node* head, int &Counter)
 	{
 		std::cout << temp->data << "\n";
 		temp = temp->next;
+	}
+}
+
+int LengthofLL(Node* head)
+{
+	Node* temp = head;
+	int Counter = 0;
+
+	while (temp != NULL)
+	{
+		Counter++;
+		temp = temp->next;
+	}
+
+	return Counter;
+}
+
+void PrintIthNode(Node* head, int i)
+{
+	if (i < 0)
+	{
+		std::cout << "-1" << "\n";
+		return;
+	}
+	Node* temp = head;
+	int Counter = 1;
+
+	while (Counter <= i && head!=NULL)
+	{
+		temp = temp->next;
 		Counter++;
 	}
+	if (head)
+	{
+		std::cout << temp->data << "\n";
+	}
+	else
+	{
+		std::cout << "-1" << "\n";
+	}
+	
+}
+
+Node* InsertElementatLocation(Node* head, int Data, int i)
+{
+	if (i < 0)
+	{
+		return head;
+	}
+	if (i == 0)
+	{
+		Node* n = new Node(Data);
+		n->next = head;
+		head = n;
+		return head;
+	}
+
+	Node* copyHead = head;
+
+	int Insertcounter = 1;
+
+	while (Insertcounter <= i - 1 && head != NULL)
+	{
+		head = head->next;
+		Insertcounter++;
+
+	}
+	if (head)
+	{
+		Node* n = new Node(Data); //Generate new node with data 
+		n->next = head->next; //Connects next of head to the front of the new node 
+		head->next = n; //updates next of head, hooks up to the back of new node n 
+		return copyHead;
+	}
+	return copyHead;
+
+}
+
+Node* InsertMethodTwo(Node* head, int Data, int i)
+{
+	if (i <= 0)
+	{
+		return head;
+	}
+	if (i == 0)
+	{
+		Node* n = new Node(Data);
+		n->next = head;
+		head = n;
+		return head;
+	}
+
+	int Counter = 1;
+
+	Node* CopyHead = head;
+
+	while (head != NULL && Counter <= i - 1)
+	{
+		head = head->next;
+		Counter++;
+	}
+	if (head)
+	{
+		Node* TempNext = head->next;
+		Node* n = new Node(Data);
+		head->next = n;
+		n->next = TempNext;
+		return CopyHead;
+	}
+	return CopyHead;
 }
 
 Node* TakeInput()
@@ -118,10 +226,22 @@ int main()
 	//print(Nexthead);
 
 	int counter = 0;
+	int PositionToPrint;
 
 	Node* DynamicHead = TakeInput();
-	print(DynamicHead, counter);
-	std::cout << "The LL length is: " << counter << "\n";
+	print(DynamicHead);
+	//counter = LengthofLL(DynamicHead);
+	//std::cout << "The LL length is: " << counter << "\n";
+	//std::cout << "What element do you want to print: ";
+	//std::cin >> PositionToPrint;
+	//PrintIthNode(DynamicHead, PositionToPrint);
+
+	int Placement = 2;
+
+	//DynamicHead = InsertElementatLocation(DynamicHead, 15, Placement);
+	DynamicHead = InsertMethodTwo(DynamicHead, 15, Placement);
+	print(DynamicHead);
+
 //	Node* HeadUpdate = TakeInput2();
 //	print(HeadUpdate, counter);
 
