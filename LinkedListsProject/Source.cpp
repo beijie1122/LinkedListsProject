@@ -122,6 +122,45 @@ Node* InsertMethodTwo(Node* head, int Data, int i)
 	return CopyHead;
 }
 
+Node* DeleteIthNode(Node* head, int i)
+{
+	if (i < 0)
+	{
+		return head;
+	}
+	if (i == 0 && head) //or else runtime error if we do not include head check
+	{
+		Node* newHead = head->next;
+		head = head->next;
+		delete head;
+		return newHead;
+	}
+
+	int DeleteCounter = 1;
+
+	Node* Current = head;
+
+	while (head != NULL && DeleteCounter <= i-1)
+	{
+		Current = Current->next;
+		DeleteCounter++;
+	}
+
+	if (Current && Current->next) // Check Current->next to avoid runtime error or when n is more than the length of the LL 
+	{
+		//Node* TempNext = head->next;
+		//TempNext = TempNext->next;
+		//head->next = TempNext;
+		Node* TempHead = Current->next;
+		Current->next = Current->next->next;
+		TempHead->next = NULL;
+		delete TempHead;
+		return head;
+	}
+	return head;
+
+}
+
 Node* TakeInput()
 {
 	int UserData;
@@ -240,6 +279,9 @@ int main()
 
 	//DynamicHead = InsertElementatLocation(DynamicHead, 15, Placement);
 	DynamicHead = InsertMethodTwo(DynamicHead, 15, Placement);
+	print(DynamicHead);
+
+	DynamicHead = DeleteIthNode(DynamicHead, 4);
 	print(DynamicHead);
 
 //	Node* HeadUpdate = TakeInput2();
