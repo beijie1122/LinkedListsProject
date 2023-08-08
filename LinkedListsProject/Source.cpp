@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Node.h"
+#include <vector>
 
 void print(Node* head)
 {
@@ -25,6 +26,20 @@ int LengthofLL(Node* head)
 	}
 
 	return Counter;
+}
+
+int LengthofLLRecursive(Node* head)
+{
+	Node* temp = head;
+	
+	if (temp == NULL)
+	{
+		return 0;
+	}
+	int smallAnswer = LengthofLLRecursive(temp->next);
+
+	return 1 + smallAnswer;
+	
 }
 
 void PrintIthNode(Node* head, int i)
@@ -161,6 +176,108 @@ Node* DeleteIthNode(Node* head, int i)
 
 }
 
+bool IsElementPresent(Node* head, int Value)
+{
+	Node* temp = head;
+
+	while (temp)
+	{
+		if (temp->data == Value)
+		{
+			return true;
+		}
+		temp = temp->next;	
+	}
+	return false;
+
+}
+
+bool IsElementPresentRec(Node* head, int Value)
+{
+	Node* temp = head;
+
+	if (temp == NULL)
+	{
+		return false;
+	}
+	if (temp->data == Value)
+	{
+		return true;
+	}
+
+	return IsElementPresentRec(temp->next, Value);
+}
+
+Node* FindMiddleElementData(Node* head)
+{
+	Node* temp = head;
+
+	Node* SlowPtr = temp;
+
+	Node* FastPtr = temp->next;
+
+	while (FastPtr && FastPtr->next)
+	{
+		SlowPtr = SlowPtr->next;
+		FastPtr = FastPtr->next->next;
+	}
+	if (FastPtr) // EVEN Length 
+	{
+		return SlowPtr->next;
+	}
+	return SlowPtr;
+}
+
+Node* ReverseLL(Node* head)
+{
+	Node* Current = head;
+	Node* Previous = NULL;
+
+	while (Current)
+	{
+		Node* n = Current->next;
+		Current->next = Previous;
+
+		Previous = Current;
+		Current = n;
+	}
+
+	return Previous;
+
+}
+
+Node* DeleteIthNodeFromEnd(Node* head, int RemovedSpace)
+{
+	Node* FirstPtr = head;
+	Node* SecondPtr = head;
+
+	while (RemovedSpace--)
+	{
+		SecondPtr = SecondPtr->next;
+	}
+
+	if (SecondPtr == NULL) // For if RemovedSpace = LL Length 
+	{
+		return FirstPtr->next;
+	}
+
+	while (SecondPtr->next != NULL)
+	{
+		SecondPtr = SecondPtr->next;
+		FirstPtr = FirstPtr->next;
+	}
+
+	FirstPtr->next = FirstPtr->next->next;
+
+	return head;
+
+}
+
+//Node* MergeTwoSortedLL(Node* Head1, Node* Head2)
+//{
+
+//}
+
 Node* TakeInput()
 {
 	int UserData;
@@ -219,6 +336,31 @@ Node* TakeInput2()
 	return head;
 }
 
+Node* TakeInputFromVector(std::vector<int> Values)
+{
+	Node* head = NULL;
+	Node* tail = NULL;
+
+	for (int i = 0; i < Values.size(); i++)
+	{
+		Node* n = new Node(Values.at(i));
+
+		if (head == NULL)
+		{
+			head = n;
+			tail = n;
+		}
+		else
+		{
+			tail->next = n;
+			tail = n;
+		}
+
+	}
+	return head;
+
+}
+
 int main()
 {
 
@@ -267,6 +409,14 @@ int main()
 	int counter = 0;
 	int PositionToPrint;
 
+	Node* TestLL;
+
+	std::vector<int> TestLLValues = { 10, 20, 30, 40, 50 };
+
+	TestLL = TakeInputFromVector(TestLLValues);
+
+	print(TestLL);
+
 	Node* DynamicHead = TakeInput();
 	print(DynamicHead);
 	//counter = LengthofLL(DynamicHead);
@@ -275,7 +425,35 @@ int main()
 	//std::cin >> PositionToPrint;
 	//PrintIthNode(DynamicHead, PositionToPrint);
 
+	int Length = 0;
+
+	Length = LengthofLLRecursive(DynamicHead);
+
+	bool IsPresent = false;
+
+	IsPresent = IsElementPresent(DynamicHead, 0);
+
+	std::cout << IsPresent << "\n";
+
+	std::cout << "The LL Length is: " << Length << "\n";
+
 	int Placement = 2;
+
+	Node* MidPoint;
+
+	MidPoint = FindMiddleElementData(DynamicHead);
+
+	std::cout << "The Value of the MidPoint is: " << MidPoint->data << "\n";
+
+	DynamicHead = DeleteIthNodeFromEnd(DynamicHead, 2);
+
+	std::cout << "Deleted an element" << "\n";
+
+	print(DynamicHead);
+
+	DynamicHead = ReverseLL(DynamicHead);
+
+	print(DynamicHead);
 
 	//DynamicHead = InsertElementatLocation(DynamicHead, 15, Placement);
 	DynamicHead = InsertMethodTwo(DynamicHead, 15, Placement);
