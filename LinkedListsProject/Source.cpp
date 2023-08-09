@@ -210,11 +210,11 @@ bool IsElementPresentRec(Node* head, int Value)
 
 Node* FindMiddleElementData(Node* head)
 {
-	Node* temp = head;
+	//Node* temp = head;
 
-	Node* SlowPtr = temp;
+	Node* SlowPtr = head;
 
-	Node* FastPtr = temp->next;
+	Node* FastPtr = head->next;
 
 	while (FastPtr && FastPtr->next)
 	{
@@ -361,6 +361,191 @@ Node* TakeInputFromVector(std::vector<int> Values)
 
 }
 
+Node* MergeTwoLists(Node* LL1, Node* LL2)
+{
+	if (LL1 == NULL)
+	{
+		return LL2;
+	}
+	if (LL2 == NULL)
+	{
+		return LL1;
+	}
+
+	Node* FinalHead = NULL; // Head of the list we want to return 
+	
+
+	if (LL1->data < LL2->data)
+	{
+		FinalHead = LL1;
+		LL1 = LL1->next;
+	}
+	else
+	{
+		FinalHead = LL2;
+		LL2 = LL2->next;
+	}
+	Node* FinalTail = FinalHead; //Used to establish links, useless for other usage 
+
+	while (LL1 && LL2)
+	{
+		if (LL1->data < LL2->data)
+		{
+			FinalTail->next = LL1;
+			LL1 = LL1->next;
+		}
+		else
+		{
+			FinalTail->next = LL2;
+			LL2 = LL2->next;
+		}
+		FinalTail = FinalTail->next;
+	}
+	if (LL1)
+	{
+		FinalTail->next = LL1;
+	}
+	else
+	{
+		FinalTail->next = LL2;
+	}
+
+	return FinalHead;
+
+
+}
+
+Node* SortedMerge(Node* a, Node* b)
+{
+	Node* result = NULL;
+
+	if (a == NULL)
+	{
+		return b;
+	}
+	else if (b == NULL)
+	{
+		return a;
+	}
+
+	if (a->data < b->data)
+	{
+		result = a;
+		result->next = SortedMerge(a->next, b);
+	}
+	else
+	{
+		result = b;
+		result->next = SortedMerge(a, b->next);
+	}
+
+	return result;
+
+}
+
+Node* SortLL(Node* head)
+{
+
+	if (head == NULL || head->next == NULL)
+	{
+		return head;
+	}
+	///break list into two halves 
+
+	Node* SlowPtr = head;
+	Node* FastPtr = head->next;
+
+	while (FastPtr && FastPtr->next)
+	{
+		SlowPtr = SlowPtr->next;
+		FastPtr = FastPtr->next->next;
+	}
+
+	//Now SlowPtr is at middle node 
+	Node* SecondHalf = SlowPtr->next; //make this to avoid missing the link when breaking
+
+	SlowPtr->next = NULL; //Now Broken 
+
+	std::cout << "Printing: ";
+
+	print(head);
+
+	Node* a = SortLL(head);
+	Node* b = SortLL(SecondHalf);
+
+	head = SortedMerge(a, b);
+
+	return head;
+}
+
+void FrontBackSplit(Node* source, Node** frontRef, Node** backRef)
+{
+	Node* fast;
+	Node* slow;
+	slow = source;
+	fast = source->next;
+
+	while (fast != NULL)
+	{
+		fast = fast->next;
+		if (fast != NULL)
+		{
+			slow = slow->next;
+			fast = fast->next;
+		}
+	}
+
+	*frontRef = source;
+	*backRef = slow->next;
+	slow->next = NULL;
+}
+
+Node* SortedMergeOnline(Node* a, Node* b)
+{
+	Node* result = NULL;
+
+	if (a == NULL)
+	{
+		return b;
+	}
+	else if (b == NULL)
+	{
+		return a;
+	}
+
+	if (a->data <= b->data)
+	{
+		result = a;
+		result->next = SortedMergeOnline(a->next, b);
+	}
+	else
+	{
+		result = b;
+		result->next = SortedMergeOnline(a, b->next);
+	}
+	return result;
+}
+
+void MergeSortOnline(Node** headRef)
+{
+	Node* head = *headRef;
+	Node* a;
+	Node* b;
+
+	if (head == NULL || head->next == NULL)
+	{
+		return;
+	}
+
+	FrontBackSplit(head, &a, &b);
+
+	MergeSortOnline(&a);
+	MergeSortOnline(&b);
+
+	*headRef = SortedMergeOnline(a, b);
+
+}
+
 int main()
 {
 
@@ -411,9 +596,39 @@ int main()
 
 	Node* TestLL;
 
+	Node* TestLL2;
+
+	Node* TestLL3;
+
 	std::vector<int> TestLLValues = { 10, 20, 30, 40, 50 };
 
+	std::vector<int> TestLL2Values = { 1, 21, 29, 42, 47 };
+
+	std::vector<int> TestLL3Values = {1, 30, 15, 2, 12, 3, 10, 5};
+
 	TestLL = TakeInputFromVector(TestLLValues);
+
+	TestLL2 = TakeInputFromVector(TestLL2Values);
+
+	TestLL3 = TakeInputFromVector(TestLL3Values);
+
+	print(TestLL);
+
+	print(TestLL2);
+
+	print(TestLL3);
+
+	//SortLL(TestLL3);
+
+	MergeSortOnline(&TestLL3);
+
+	std::cout << "Merge Sort Attempted!" << "\n";
+
+	print(TestLL3);
+
+	TestLL = MergeTwoLists(TestLL, TestLL2);
+
+	std::cout << "Listed Merged Successfully!" << "\n";
 
 	print(TestLL);
 
